@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Remote Work Hub</title>
+  <title>OLJ Clone - Remote Work Hub</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>💼 Remote Work Hub</h1>
+<h1>💼 Remote Work Hub (Advanced OLJ Clone)</h1>
 
-<!-- =========================
-     AUTH SECTION
-========================= -->
+<!-- ================= LOGIN ================= -->
 <div id="authSection">
   <h2>Login / Register</h2>
 
-  <input id="email" type="email" placeholder="Email">
+  <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
-  <!-- ROLE SELECTION -->
   <select id="role">
     <option value="jobseeker">Job Seeker</option>
     <option value="employer">Employer</option>
@@ -29,9 +26,7 @@
 
 <hr>
 
-<!-- =========================
-     USER INFO SECTION
-========================= -->
+<!-- ================= USER ================= -->
 <div id="userSection" style="display:none;">
   <p>Logged in as: <span id="userEmail"></span></p>
   <button onclick="logout()">Logout</button>
@@ -39,11 +34,9 @@
 
 <hr>
 
-<!-- =========================
-     JOB POST FORM (Employer only)
-========================= -->
+<!-- ================= POST JOB (EMPLOYER ONLY) ================= -->
 <div id="jobForm" style="display:none;">
-  <h2>Post a Job (Employers Only)</h2>
+  <h2>Post a Job (Employer Dashboard)</h2>
 
   <input id="title" placeholder="Job Title">
   <input id="company" placeholder="Company">
@@ -55,20 +48,22 @@
 
 <hr>
 
-<!-- =========================
-     JOB LISTINGS
-========================= -->
+<!-- ================= JOB LIST ================= -->
 <h2>Available Jobs</h2>
 <div id="jobList"></div>
 
-<!-- =========================
-     FIREBASE SDKs
-========================= -->
+<!-- ================= APPLY SECTION ================= -->
+<div id="applyBox" style="display:none;">
+  <h2>Apply to Job</h2>
+  <textarea id="applyMessage" placeholder="Write your application message"></textarea>
+  <button onclick="submitApplication()">Submit Application</button>
+</div>
+
+<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-<!-- YOUR APP -->
 <script src="app.js"></script>
 
 </body>
