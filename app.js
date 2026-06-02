@@ -1,3 +1,4 @@
+// ================= FIREBASE CONFIG =================
 const firebaseConfig = {
   apiKey: "AIzaSyAs5VqodQCgH-F-VYbM1zS2BzsoHOQGpzo",
   authDomain: "remote-work-hub-211d8.firebaseapp.com",
@@ -14,69 +15,70 @@ const db = firebase.firestore();
 
 let selectedJobId = null;
 
-/* ================= AUTH ================= */
-
+// ================= REGISTER =================
 function register() {
-  const email = email.value;
+  const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const role = document.getElementById("role").value;
 
   auth.createUserWithEmailAndPassword(email, password)
     .then(userCred => {
-      db.collection("users").doc(userCred.user.uid).set({
+      return db.collection("users").doc(userCred.user.uid).set({
         email,
         role,
         createdAt: new Date().toISOString()
       });
-    });
+    })
+    .catch(err => alert(err.message));
 }
 
+// ================= LOGIN =================
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  auth.signInWithEmailAndPassword(email, password);
+  auth.signInWithEmailAndPassword(email, password)
+    .catch(err => alert(err.message));
 }
 
+// ================= LOGOUT =================
 function logout() {
   auth.signOut();
 }
 
-/* ================= AUTH STATE ================= */
-
-auth.onAuthStateChanged(user => {
-  if (user) {
-    document.getElementById("authSection").style.display = "none";
-    document.getElementById("userSection").style.display = "block";
-    document.getElementById("userEmail").innerText = user.email;
-
-    db.collection("users").doc(user.uid).get().then(doc => {
-      const data = doc.data();
-
-      if (data.role === "employer") {
-        document.getElementById("jobForm").style.display = "block";
-      } else {
-        document.getElementById("jobForm").style.display = "none";
-      }
-    });
-
-    loadJobs();
-  } else {
+// ================= AUTH STATE =================
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("userSection").style.display = "none";
     document.getElementById("jobForm").style.display = "none";
+    return;
   }
+
+  document.getElementById("authSection").style.display = "none";
+  document.getElementById("userSection").style.display = "block";
+  document.getElementById("userEmail").innerText = user.email;
+
+  const userDoc = await db.collection("users").doc(user.uid).get();
+  const role = userDoc.data().role;
+
+  if (role === "employer") {
+    document.getElementById("jobForm").style.display = "block";
+  } else {
+    document.getElementById("jobForm").style.display = "none";
+  }
+
+  loadJobs();
 });
 
-/* ================= POST JOB ================= */
-
+// ================= POST JOB =================
 function postJob() {
+  const user = auth.currentUser;
+
   const title = document.getElementById("title").value;
   const company = document.getElementById("company").value;
   const salary = document.getElementById("salary").value;
   const description = document.getElementById("description").value;
-
-  const user = auth.currentUser;
 
   db.collection("jobs").add({
     title,
@@ -90,8 +92,7 @@ function postJob() {
   alert("Job posted!");
 }
 
-/* ================= LOAD JOBS ================= */
-
+// ================= LOAD JOBS =================
 function loadJobs() {
   const container = document.getElementById("jobList");
 
@@ -119,16 +120,15 @@ function loadJobs() {
     });
 }
 
-/* ================= APPLY SYSTEM ================= */
-
+// ================= APPLY =================
 function openApply(jobId) {
   selectedJobId = jobId;
   document.getElementById("applyBox").style.display = "block";
 }
 
 function submitApplication() {
-  const message = document.getElementById("applyMessage").value;
   const user = auth.currentUser;
+  const message = document.getElementById("applyMessage").value;
 
   db.collection("applications").add({
     jobId: selectedJobId,
