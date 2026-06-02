@@ -9,7 +9,7 @@
 
 <h1>💼 Remote Work Hub</h1>
 
-<!-- ================= AUTH ================= -->
+<!-- AUTH -->
 <div id="authSection">
   <h2>Login / Register</h2>
 
@@ -25,7 +25,7 @@
   <button onclick="login()">Login</button>
 </div>
 
-<!-- ================= USER ================= -->
+<!-- USER -->
 <div id="userSection" style="display:none;">
   <p>Logged in as: <span id="userEmail"></span></p>
   <button onclick="logout()">Logout</button>
@@ -33,20 +33,14 @@
 
 <hr>
 
-<!-- ================= EMPLOYER DASHBOARD ================= -->
+<!-- EMPLOYER DASHBOARD -->
 <div id="employerDashboard" style="display:none;">
-
   <h2>Employer Dashboard</h2>
 
-  <button onclick="showTab('dashboard')">Dashboard</button>
   <button onclick="showTab('jobs')">My Jobs</button>
   <button onclick="showTab('post')">Post Job</button>
 
-  <div id="tab-dashboard">
-    <h3>Overview</h3>
-  </div>
-
-  <div id="tab-jobs" style="display:none;">
+  <div id="tab-jobs">
     <h3>My Jobs</h3>
     <div id="myJobs"></div>
   </div>
@@ -61,37 +55,32 @@
 
     <button onclick="postJob()">Post Job</button>
   </div>
-
 </div>
 
 <hr>
 
-<!-- ================= JOB LIST ================= -->
+<!-- JOB LIST -->
 <div id="jobListWrapper">
   <h2>Available Jobs</h2>
   <div id="jobList"></div>
 </div>
 
-<!-- ================= APPLY BOX ================= -->
+<!-- APPLY BOX -->
 <div id="applyBox" style="display:none;">
   <h3>Apply</h3>
   <textarea id="applyMessage"></textarea>
   <button onclick="submitApplication()">Send</button>
 </div>
 
-<!-- ================= CHAT BOX ================= -->
-<div id="chatBox" style="display:none; position:fixed; right:20px; bottom:20px; width:300px; background:#fff; border:1px solid #ccc; padding:10px;">
-  
+<!-- CHAT BOX -->
+<div id="chatBox" style="display:none; position:fixed; right:20px; bottom:20px; width:300px; background:white; border:1px solid #ccc; padding:10px;">
   <h3>Chat</h3>
-
   <div id="chatMessages" style="height:200px; overflow:auto;"></div>
-
   <input id="chatInput" placeholder="Message">
   <button onclick="sendMessage()">Send</button>
-
 </div>
 
-<!-- ================= FIREBASE ================= -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
