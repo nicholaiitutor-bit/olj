@@ -14,7 +14,9 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// ================= GLOBAL STATE =================
 let currentUserRole = null;
+let selectedJobId = null;
 
 // ================= REGISTER =================
 function register() {
@@ -55,6 +57,7 @@ auth.onAuthStateChanged(async (user) => {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("userSection").style.display = "none";
     document.getElementById("employerDashboard").style.display = "none";
+    document.getElementById("jobList").innerHTML = "";
 
     return;
   }
@@ -106,7 +109,7 @@ function postJob() {
   alert("Job posted!");
 }
 
-// ================= ALL JOBS (JOBSEEKERS VIEW) =================
+// ================= LOAD ALL JOBS =================
 function loadJobs() {
   const container = document.getElementById("jobList");
 
@@ -118,12 +121,19 @@ function loadJobs() {
       snapshot.forEach(doc => {
         const job = doc.data();
 
+        let applyBtn = "";
+
+        if (currentUserRole === "jobseeker") {
+          applyBtn = `<button onclick="openApply('${doc.id}')">Apply</button>`;
+        }
+
         container.innerHTML += `
           <div class="job">
             <h3>${job.title}</h3>
             <p>${job.company}</p>
             <p>${job.salary}</p>
             <p>${job.description}</p>
+            ${applyBtn}
           </div>
         `;
       });
@@ -152,4 +162,25 @@ function loadMyJobs() {
         `;
       });
     });
+}
+
+// ================= APPLY SYSTEM =================
+function openApply(jobId) {
+  selectedJobId = jobId;
+  document.getElementById("applyBox").style.display = "block";
+}
+
+function submitApplication() {
+  const user = auth.currentUser;
+  const message = document.getElementById("applyMessage").value;
+
+  db.collection("applications").add({
+    jobId: selectedJobId,
+    applicantId: user.uid,
+    message,
+    createdAt: new Date().toISOString()
+  });
+
+  alert("Application sent!");
+  document.getElementById("applyBox").style.display = "none";
 }
