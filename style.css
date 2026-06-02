@@ -1,38 +1,129 @@
+/* ================= GLOBAL ================= */
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #f4f6fb;
   margin: 0;
   padding: 0;
+  color: #333;
 }
 
+/* ================= HEADER ================= */
 h1 {
   background: #1f4bd8;
   color: white;
+  margin: 0;
   padding: 20px;
   text-align: center;
 }
 
+/* ================= SECTIONS ================= */
+#authSection,
+#userSection,
+#employerDashboard,
+#jobListWrapper {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+/* ================= INPUTS ================= */
 input, textarea, select {
   width: 100%;
   padding: 10px;
-  margin: 6px 0;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
+/* ================= BUTTONS ================= */
 button {
   background: #1f4bd8;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 10px 15px;
   margin: 5px 0;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 6px;
+  transition: 0.2s;
 }
 
+button:hover {
+  background: #163aa3;
+}
+
+/* ================= DASHBOARD BUTTONS ================= */
+#employerDashboard button {
+  margin-right: 10px;
+  background: #333;
+}
+
+#employerDashboard button:hover {
+  background: #000;
+}
+
+/* ================= JOB CARD ================= */
 .job {
   background: white;
   padding: 15px;
-  margin: 10px auto;
-  max-width: 700px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin: 15px 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+.job:hover {
+  transform: translateY(-2px);
+}
+
+/* ================= JOB TITLE ================= */
+.job h3 {
+  margin: 0 0 5px 0;
+  color: #1f4bd8;
+}
+
+/* ================= APPLY / ACTION AREA ================= */
+.job button {
+  margin-top: 10px;
+}
+
+/* ================= AUTH BOX ================= */
+#authSection {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ================= CHAT BOX ================= */
+#chatBox {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  padding: 10px;
+}
+
+#chatMessages {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 8px;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+/* ================= SMALL TEXT ================= */
+p {
+  margin: 5px 0;
+}
+
+/* ================= SEPARATORS ================= */
+hr {
+  border: none;
+  height: 1px;
+  background: #ddd;
+  margin: 20px 0;
 }
