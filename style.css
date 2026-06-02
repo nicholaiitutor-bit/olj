@@ -1,25 +1,105 @@
 body {
-  font-family: Arial;
-  background: #f4f6f9;
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* HEADER */
+h1 {
+  background: #1f4bd8;
+  color: white;
   padding: 20px;
+  margin: 0;
+  text-align: center;
 }
 
-input, textarea, select {
-  display: block;
-  margin: 8px 0;
-  padding: 10px;
-  width: 300px;
+/* SECTIONS */
+#authSection,
+#userSection,
+#jobForm,
+#applyBox {
+  background: white;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
+/* INPUTS */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #1f4bd8;
+}
+
+/* BUTTONS */
 button {
-  padding: 10px;
-  margin: 5px 0;
+  background: #1f4bd8;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
   cursor: pointer;
+  margin-top: 5px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #163aa5;
+}
+
+/* JOB CARDS */
+#jobList {
+  max-width: 800px;
+  margin: 20px auto;
 }
 
 .job {
   background: white;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: 0.2s;
+}
+
+.job:hover {
+  transform: translateY(-2px);
+}
+
+/* JOB TITLE */
+.job h3 {
+  margin: 0 0 8px 0;
+  color: #1f4bd8;
+}
+
+/* APPLY BUTTON STYLE DIFFERENT */
+.job button {
+  background: #28a745;
+}
+
+.job button:hover {
+  background: #1f7a32;
+}
+
+/* APPLY BOX */
+#applyBox {
+  position: sticky;
+  bottom: 20px;
 }
