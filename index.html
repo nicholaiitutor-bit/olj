@@ -1,14 +1,16 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>Remote Work Hub</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <h1>💼 Remote Work Hub</h1>
 
-<!-- AUTH -->
+<!-- ================= AUTH ================= -->
 <div id="authSection">
   <h2>Login / Register</h2>
 
@@ -24,9 +26,7 @@
   <button onclick="login()">Login</button>
 </div>
 
-<hr>
-
-<!-- USER INFO -->
+<!-- ================= USER ================= -->
 <div id="userSection" style="display:none;">
   <p>Logged in as: <span id="userEmail"></span></p>
   <button onclick="logout()">Logout</button>
@@ -34,29 +34,30 @@
 
 <hr>
 
-<!-- EMPLOYER DASHBOARD -->
-<div id="employerDashboard" style="display:none; max-width:900px; margin:20px auto;">
+<!-- ================= EMPLOYER DASHBOARD ================= -->
+<div id="employerDashboard" style="display:none;">
 
   <h2>Employer Dashboard</h2>
 
-  <div style="display:flex; gap:10px; margin-bottom:20px;">
-    <button onclick="showTab('dashboard')">📊 Dashboard</button>
-    <button onclick="showTab('jobs')">💼 My Jobs</button>
-    <button onclick="showTab('post')">➕ Post Job</button>
-  </div>
+  <button onclick="showTab('dashboard')">Dashboard</button>
+  <button onclick="showTab('jobs')">My Jobs</button>
+  <button onclick="showTab('post')">Post Job</button>
 
+  <!-- DASHBOARD -->
   <div id="tab-dashboard">
     <h3>Overview</h3>
-    <p>Manage your hiring activity here.</p>
+    <p>Manage your hiring here.</p>
   </div>
 
+  <!-- MY JOBS -->
   <div id="tab-jobs" style="display:none;">
     <h3>My Jobs</h3>
     <div id="myJobs"></div>
   </div>
 
+  <!-- POST JOB -->
   <div id="tab-post" style="display:none;">
-    <h3>Post a Job</h3>
+    <h3>Post Job</h3>
 
     <input id="title" placeholder="Job Title">
     <input id="company" placeholder="Company">
@@ -70,18 +71,20 @@
 
 <hr>
 
-<!-- JOB LIST -->
-<h2>Available Jobs</h2>
-<div id="jobList"></div>
+<!-- ================= JOB LIST (JOBSEEKER VIEW) ================= -->
+<div id="jobListWrapper">
+  <h2>Available Jobs</h2>
+  <div id="jobList"></div>
+</div>
 
-<!-- APPLY BOX -->
+<!-- ================= APPLY BOX ================= -->
 <div id="applyBox" style="display:none;">
   <h3>Apply to Job</h3>
-  <textarea id="applyMessage" placeholder="Your message"></textarea>
+  <textarea id="applyMessage" placeholder="Message"></textarea>
   <button onclick="submitApplication()">Send Application</button>
 </div>
 
-<!-- FIREBASE -->
+<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
