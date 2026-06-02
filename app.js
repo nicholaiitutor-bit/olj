@@ -15,25 +15,45 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // ================= STATE =================
-let currentUserRole = null;
+let currentRole = null;
 let selectedJobId = null;
 let activeChatId = null;
 
-// ================= AUTH =================
-function register() {
-  const email = email.value;
-  const password = password.value;
-  const role = document.getElementById("role").value;
+// ================= AUTH UI =================
+function openAuth(type) {
+  authModal.style.display = "block";
 
-  auth.createUserWithEmailAndPassword(email, password)
+  if (type === "login") {
+    authTitle.innerText = "Login";
+    registerBtn.style.display = "none";
+    loginBtn.style.display = "block";
+  } else {
+    authTitle.innerText = "Register";
+    registerBtn.style.display = "block";
+    loginBtn.style.display = "none";
+  }
+}
+
+function closeAuth() {
+  authModal.style.display = "none";
+}
+
+// ================= REGISTER =================
+function register() {
+  const emailVal = email.value;
+  const passVal = password.value;
+  const roleVal = role.value;
+
+  auth.createUserWithEmailAndPassword(emailVal, passVal)
     .then(userCred => {
       return db.collection("users").doc(userCred.user.uid).set({
-        email,
-        role
+        email: emailVal,
+        role: roleVal
       });
     });
 }
 
+// ================= LOGIN =================
 function login() {
   auth.signInWithEmailAndPassword(email.value, password.value);
 }
@@ -44,25 +64,30 @@ function logout() {
 
 // ================= AUTH STATE =================
 auth.onAuthStateChanged(async (user) => {
-  if (!user) return;
 
-  const doc = await db.collection("users").doc(user.uid).get();
-  currentUserRole = doc.data().role;
+  if (!user) {
+    homePage.style.display = "block";
+    app.style.display = "none";
+    return;
+  }
 
-  userSection.style.display = "block";
-  authSection.style.display = "none";
+  homePage.style.display = "none";
+  app.style.display = "block";
+
   userEmail.innerText = user.email;
 
-  if (currentUserRole === "employer") {
-    employerDashboard.style.display = "block";
-    jobListWrapper.style.display = "none";
-    loadMyJobs();
-  } else {
-    employerDashboard.style.display = "none";
-    jobListWrapper.style.display = "block";
-    loadJobs();
-  }
+  const doc = await db.collection("users").doc(user.uid).get();
+  currentRole = doc.data().role;
+
+  loadJobs();
+  loadMyJobs();
 });
+
+// ================= NAVIGATION =================
+function showView(view) {
+  document.querySelectorAll("[id^='view-']").forEach(v => v.style.display = "none");
+  document.getElementById("view-" + view).style.display = "block";
+}
 
 // ================= JOBS =================
 function postJob() {
@@ -73,13 +98,12 @@ function postJob() {
     company: company.value,
     salary: salary.value,
     description: description.value,
-    ownerId: user.uid
+    ownerId: user.uid,
+    createdAt: new Date()
   });
 }
 
 function loadJobs() {
-  jobList.innerHTML = "";
-
   db.collection("jobs").onSnapshot(snap => {
     jobList.innerHTML = "";
 
@@ -103,14 +127,13 @@ function applyJob(jobId) {
 async function submitApplication() {
   const user = auth.currentUser;
 
-  const chatRef = await db.collection("chats").doc();
-
-  await chatRef.set({
+  const chatRef = await db.collection("chats").add({
     jobId: selectedJobId,
     participants: {
       applicantId: user.uid,
       employerId: ""
-    }
+    },
+    createdAt: new Date()
   });
 
   await db.collection("applications").add({
@@ -137,9 +160,7 @@ function loadMyJobs() {
         myJobs.innerHTML += `
           <div class="job">
             <h3>${doc.data().title}</h3>
-            <button onclick="viewApplicants('${doc.id}')">
-              Applicants
-            </button>
+            <button onclick="viewApplicants('${doc.id}')">Applicants</button>
             <div id="apps-${doc.id}"></div>
           </div>
         `;
@@ -163,7 +184,7 @@ function viewApplicants(jobId) {
         container.innerHTML += `
           <div>
             <p>${a.message}</p>
-            <p>Status: ${a.status}</p>
+            <p>${a.status}</p>
 
             <button onclick="openChat('${a.chatId}')">Message</button>
             <button onclick="updateStatus('${doc.id}','accepted')">Accept</button>
@@ -190,11 +211,13 @@ function openChat(chatId) {
     .collection("messages")
     .orderBy("createdAt")
     .onSnapshot(snap => {
+
       chatMessages.innerHTML = "";
 
       snap.forEach(doc => {
         chatMessages.innerHTML += `<p>${doc.data().text}</p>`;
       });
+
     });
 }
 
@@ -206,8 +229,8 @@ function sendMessage() {
     .collection("messages")
     .add({
       text: chatInput.value,
-      sender: user.uid,
-      createdAt: new Date().toISOString()
+      senderId: user.uid,
+      createdAt: new Date()
     });
 
   chatInput.value = "";
