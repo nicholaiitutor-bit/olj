@@ -1,28 +1,56 @@
-<!-- EMPLOYER DASHBOARD NAV -->
-<div id="employerDashboard" style="display:none; max-width:800px; margin:20px auto;">
+<h1>💼 Remote Work Hub</h1>
+
+<!-- AUTH -->
+<div id="authSection">
+  <h2>Login / Register</h2>
+
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <select id="role">
+    <option value="jobseeker">Job Seeker</option>
+    <option value="employer">Employer</option>
+  </select>
+
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<hr>
+
+<!-- USER -->
+<div id="userSection" style="display:none;">
+  <p>Logged in as: <span id="userEmail"></span></p>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<hr>
+
+<!-- ================= EMPLOYER DASHBOARD ================= -->
+<div id="employerDashboard" style="display:none; max-width:900px; margin:20px auto;">
 
   <h2>Employer Dashboard</h2>
 
+  <!-- NAVIGATION -->
   <div style="display:flex; gap:10px; margin-bottom:20px;">
     <button onclick="showTab('dashboard')">📊 Dashboard</button>
     <button onclick="showTab('jobs')">💼 My Jobs</button>
     <button onclick="showTab('post')">➕ Post Job</button>
-    <button onclick="showTab('apps')">📩 Applicants</button>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- DASHBOARD TAB -->
   <div id="tab-dashboard">
     <h3>Overview</h3>
-    <p>Welcome to your employer dashboard.</p>
+    <p>Welcome! Manage your jobs and applicants here.</p>
   </div>
 
-  <!-- MY JOBS -->
+  <!-- MY JOBS TAB -->
   <div id="tab-jobs" style="display:none;">
-    <h3>Your Jobs</h3>
+    <h3>My Jobs</h3>
     <div id="myJobs"></div>
   </div>
 
-  <!-- POST JOB -->
+  <!-- POST JOB TAB -->
   <div id="tab-post" style="display:none;">
     <h3>Post a Job</h3>
 
@@ -34,10 +62,10 @@
     <button onclick="postJob()">Post Job</button>
   </div>
 
-  <!-- APPLICANTS -->
-  <div id="tab-apps" style="display:none;">
-    <h3>Applicants</h3>
-    <p>Coming soon...</p>
-  </div>
-
 </div>
+
+<hr>
+
+<!-- JOB LIST (for jobseekers) -->
+<h2>All Jobs</h2>
+<div id="jobList"></div>
