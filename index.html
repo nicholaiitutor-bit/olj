@@ -1,69 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Remote Work Hub</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<!-- EMPLOYER DASHBOARD NAV -->
+<div id="employerDashboard" style="display:none; max-width:800px; margin:20px auto;">
 
-<h1>💼 Remote Work Hub</h1>
+  <h2>Employer Dashboard</h2>
 
-<!-- AUTH -->
-<div id="authSection">
-  <h2>Login / Register</h2>
+  <div style="display:flex; gap:10px; margin-bottom:20px;">
+    <button onclick="showTab('dashboard')">📊 Dashboard</button>
+    <button onclick="showTab('jobs')">💼 My Jobs</button>
+    <button onclick="showTab('post')">➕ Post Job</button>
+    <button onclick="showTab('apps')">📩 Applicants</button>
+  </div>
 
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard">
+    <h3>Overview</h3>
+    <p>Welcome to your employer dashboard.</p>
+  </div>
 
-  <select id="role">
-    <option value="jobseeker">Job Seeker</option>
-    <option value="employer">Employer</option>
-  </select>
+  <!-- MY JOBS -->
+  <div id="tab-jobs" style="display:none;">
+    <h3>Your Jobs</h3>
+    <div id="myJobs"></div>
+  </div>
 
-  <button onclick="register()">Register</button>
-  <button onclick="login()">Login</button>
+  <!-- POST JOB -->
+  <div id="tab-post" style="display:none;">
+    <h3>Post a Job</h3>
+
+    <input id="title" placeholder="Job Title">
+    <input id="company" placeholder="Company">
+    <input id="salary" placeholder="Salary">
+    <textarea id="description" placeholder="Description"></textarea>
+
+    <button onclick="postJob()">Post Job</button>
+  </div>
+
+  <!-- APPLICANTS -->
+  <div id="tab-apps" style="display:none;">
+    <h3>Applicants</h3>
+    <p>Coming soon...</p>
+  </div>
+
 </div>
-
-<hr>
-
-<!-- USER -->
-<div id="userSection" style="display:none;">
-  <p>Logged in as: <span id="userEmail"></span></p>
-  <button onclick="logout()">Logout</button>
-</div>
-
-<hr>
-
-<!-- JOB FORM -->
-<div id="jobForm" style="display:none;">
-  <h2>Post a Job (Employer)</h2>
-
-  <input id="title" placeholder="Job Title">
-  <input id="company" placeholder="Company">
-  <input id="salary" placeholder="Salary">
-  <textarea id="description" placeholder="Description"></textarea>
-
-  <button onclick="postJob()">Post Job</button>
-</div>
-
-<hr>
-
-<h2>Jobs</h2>
-<div id="jobList"></div>
-
-<!-- APPLY BOX -->
-<div id="applyBox" style="display:none;">
-  <h3>Apply to Job</h3>
-  <textarea id="applyMessage" placeholder="Your message"></textarea>
-  <button onclick="submitApplication()">Send Application</button>
-</div>
-
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
-<script src="app.js"></script>
-
-</body>
-</html>
