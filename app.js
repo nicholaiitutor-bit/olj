@@ -1,5 +1,5 @@
 
-// ================= FIREBASE CONFIG =================
+// ================= FIREBASE =================
 const firebaseConfig = {
   apiKey: "AIzaSyAs5VqodQCgH-F-VYbM1zS2BzsoHOQGpzo",
   authDomain: "remote-work-hub-211d8.firebaseapp.com",
@@ -14,7 +14,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ================= GLOBAL STATE =================
+// ================= STATE =================
 let currentUserRole = null;
 let selectedJobId = null;
 
@@ -31,8 +31,7 @@ function register() {
         role,
         createdAt: new Date().toISOString()
       });
-    })
-    .catch(err => alert(err.message));
+    });
 }
 
 // ================= LOGIN =================
@@ -40,8 +39,7 @@ function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  auth.signInWithEmailAndPassword(email, password)
-    .catch(err => alert(err.message));
+  auth.signInWithEmailAndPassword(email, password);
 }
 
 // ================= LOGOUT =================
@@ -57,8 +55,7 @@ auth.onAuthStateChanged(async (user) => {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("userSection").style.display = "none";
     document.getElementById("employerDashboard").style.display = "none";
-    document.getElementById("jobList").style.display = "none";
-
+    document.getElementById("jobListWrapper").style.display = "none";
     return;
   }
 
@@ -71,16 +68,16 @@ auth.onAuthStateChanged(async (user) => {
 
   if (currentUserRole === "employer") {
     document.getElementById("employerDashboard").style.display = "block";
-    document.getElementById("jobList").style.display = "none";
+    document.getElementById("jobListWrapper").style.display = "none";
     loadMyJobs();
   } else {
     document.getElementById("employerDashboard").style.display = "none";
-    document.getElementById("jobList").style.display = "block";
+    document.getElementById("jobListWrapper").style.display = "block";
     loadJobs();
   }
 });
 
-// ================= TAB SYSTEM =================
+// ================= TABS =================
 function showTab(tab) {
   document.getElementById("tab-dashboard").style.display = "none";
   document.getElementById("tab-jobs").style.display = "none";
@@ -93,16 +90,11 @@ function showTab(tab) {
 function postJob() {
   const user = auth.currentUser;
 
-  const title = document.getElementById("title").value;
-  const company = document.getElementById("company").value;
-  const salary = document.getElementById("salary").value;
-  const description = document.getElementById("description").value;
-
   db.collection("jobs").add({
-    title,
-    company,
-    salary,
-    description,
+    title: document.getElementById("title").value,
+    company: document.getElementById("company").value,
+    salary: document.getElementById("salary").value,
+    description: document.getElementById("description").value,
     ownerId: user.uid,
     createdAt: new Date().toISOString()
   });
@@ -110,7 +102,7 @@ function postJob() {
   alert("Job posted!");
 }
 
-// ================= LOAD ALL JOBS =================
+// ================= LOAD JOBS =================
 function loadJobs() {
   const container = document.getElementById("jobList");
 
@@ -122,26 +114,21 @@ function loadJobs() {
       snapshot.forEach(doc => {
         const job = doc.data();
 
-        let applyBtn = "";
-
-        if (currentUserRole === "jobseeker") {
-          applyBtn = `<button onclick="openApply('${doc.id}')">Apply</button>`;
-        }
-
         container.innerHTML += `
           <div class="job">
             <h3>${job.title}</h3>
             <p>${job.company}</p>
             <p>${job.salary}</p>
             <p>${job.description}</p>
-            ${applyBtn}
+
+            <button onclick="openApply('${doc.id}')">Apply</button>
           </div>
         `;
       });
     });
 }
 
-// ================= EMPLOYER JOBS =================
+// ================= MY JOBS (EMPLOYER) =================
 function loadMyJobs() {
   const user = auth.currentUser;
   const container = document.getElementById("myJobs");
@@ -153,19 +140,25 @@ function loadMyJobs() {
 
       snapshot.forEach(doc => {
         const job = doc.data();
+        const jobId = doc.id;
 
         container.innerHTML += `
           <div class="job">
             <h3>${job.title}</h3>
             <p>${job.company}</p>
-            <p>${job.salary}</p>
+
+            <button onclick="viewApplicants('${jobId}')">
+              View Applicants
+            </button>
+
+            <div id="apps-${jobId}"></div>
           </div>
         `;
       });
     });
 }
 
-// ================= APPLY SYSTEM =================
+// ================= APPLY =================
 function openApply(jobId) {
   selectedJobId = jobId;
   document.getElementById("applyBox").style.display = "block";
@@ -173,15 +166,50 @@ function openApply(jobId) {
 
 function submitApplication() {
   const user = auth.currentUser;
-  const message = document.getElementById("applyMessage").value;
 
   db.collection("applications").add({
     jobId: selectedJobId,
     applicantId: user.uid,
-    message,
+    message: document.getElementById("applyMessage").value,
+    status: "pending",
     createdAt: new Date().toISOString()
   });
 
-  alert("Application sent!");
+  alert("Applied!");
   document.getElementById("applyBox").style.display = "none";
+}
+
+// ================= APPLICANTS SYSTEM =================
+function viewApplicants(jobId) {
+  const container = document.getElementById("apps-" + jobId);
+
+  db.collection("applications")
+    .where("jobId", "==", jobId)
+    .onSnapshot(snapshot => {
+
+      container.innerHTML = "";
+
+      snapshot.forEach(doc => {
+        const app = doc.data();
+
+        container.innerHTML += `
+          <div style="background:#f2f2f2;padding:10px;margin:5px;">
+            <p>${app.message}</p>
+            <p>Status: ${app.status}</p>
+
+            <button onclick="updateStatus('${doc.id}', 'accepted')">Accept</button>
+            <button onclick="updateStatus('${doc.id}', 'rejected')">Reject</button>
+          </div>
+        `;
+      });
+    });
+}
+
+// ================= ACCEPT / REJECT =================
+function updateStatus(appId, status) {
+  db.collection("applications").doc(appId).update({
+    status: status
+  });
+
+  alert("Updated: " + status);
 }
