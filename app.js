@@ -1,3 +1,4 @@
+
 // ================= FIREBASE CONFIG =================
 const firebaseConfig = {
   apiKey: "AIzaSyAs5VqodQCgH-F-VYbM1zS2BzsoHOQGpzo",
@@ -13,8 +14,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ================= GLOBAL STATE =================
-let selectedJobId = null;
 let currentUserRole = null;
 
 // ================= REGISTER =================
@@ -55,8 +54,7 @@ auth.onAuthStateChanged(async (user) => {
 
     document.getElementById("authSection").style.display = "block";
     document.getElementById("userSection").style.display = "none";
-    document.getElementById("jobForm").style.display = "none";
-    document.getElementById("jobList").innerHTML = "";
+    document.getElementById("employerDashboard").style.display = "none";
 
     return;
   }
@@ -66,18 +64,26 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("userEmail").innerText = user.email;
 
   const userDoc = await db.collection("users").doc(user.uid).get();
+  currentUserRole = userDoc.data().role;
 
-  currentUserRole = userDoc.exists ? userDoc.data().role : "jobseeker";
-
-  // Show job form only for employers
   if (currentUserRole === "employer") {
-    document.getElementById("jobForm").style.display = "block";
+    document.getElementById("employerDashboard").style.display = "block";
+    loadMyJobs();
   } else {
-    document.getElementById("jobForm").style.display = "none";
+    document.getElementById("employerDashboard").style.display = "none";
   }
 
   loadJobs();
 });
+
+// ================= TAB SYSTEM =================
+function showTab(tab) {
+  document.getElementById("tab-dashboard").style.display = "none";
+  document.getElementById("tab-jobs").style.display = "none";
+  document.getElementById("tab-post").style.display = "none";
+
+  document.getElementById("tab-" + tab).style.display = "block";
+}
 
 // ================= POST JOB =================
 function postJob() {
@@ -87,11 +93,6 @@ function postJob() {
   const company = document.getElementById("company").value;
   const salary = document.getElementById("salary").value;
   const description = document.getElementById("description").value;
-
-  if (!title || !company) {
-    alert("Please fill required fields");
-    return;
-  }
 
   db.collection("jobs").add({
     title,
@@ -105,7 +106,7 @@ function postJob() {
   alert("Job posted!");
 }
 
-// ================= LOAD JOBS =================
+// ================= ALL JOBS (JOBSEEKERS VIEW) =================
 function loadJobs() {
   const container = document.getElementById("jobList");
 
@@ -117,53 +118,38 @@ function loadJobs() {
       snapshot.forEach(doc => {
         const job = doc.data();
 
-        let applyButton = "";
-
-        // ONLY jobseekers can apply
-        if (currentUserRole === "jobseeker") {
-          applyButton = `
-            <button onclick="openApply('${doc.id}')">
-              Apply
-            </button>
-          `;
-        }
-
         container.innerHTML += `
           <div class="job">
             <h3>${job.title}</h3>
             <p>${job.company}</p>
             <p>${job.salary}</p>
             <p>${job.description}</p>
-
-            ${applyButton}
           </div>
         `;
       });
     });
 }
 
-// ================= APPLY =================
-function openApply(jobId) {
-  selectedJobId = jobId;
-  document.getElementById("applyBox").style.display = "block";
-}
-
-function submitApplication() {
+// ================= EMPLOYER JOBS =================
+function loadMyJobs() {
   const user = auth.currentUser;
-  const message = document.getElementById("applyMessage").value;
+  const container = document.getElementById("myJobs");
 
-  if (!message) {
-    alert("Please write a message");
-    return;
-  }
+  db.collection("jobs")
+    .where("ownerId", "==", user.uid)
+    .onSnapshot(snapshot => {
+      container.innerHTML = "";
 
-  db.collection("applications").add({
-    jobId: selectedJobId,
-    applicantId: user.uid,
-    message,
-    createdAt: new Date().toISOString()
-  });
+      snapshot.forEach(doc => {
+        const job = doc.data();
 
-  alert("Application sent!");
-  document.getElementById("applyBox").style.display = "none";
+        container.innerHTML += `
+          <div class="job">
+            <h3>${job.title}</h3>
+            <p>${job.company}</p>
+            <p>${job.salary}</p>
+          </div>
+        `;
+      });
+    });
 }
