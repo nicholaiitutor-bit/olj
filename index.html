@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>OLJ Clone - Remote Work Hub</title>
+  <title>Remote Work Hub</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>💼 Remote Work Hub (Advanced OLJ Clone)</h1>
+<h1>💼 Remote Work Hub</h1>
 
-<!-- ================= LOGIN ================= -->
+<!-- AUTH -->
 <div id="authSection">
   <h2>Login / Register</h2>
 
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
   <select id="role">
@@ -26,7 +26,7 @@
 
 <hr>
 
-<!-- ================= USER ================= -->
+<!-- USER -->
 <div id="userSection" style="display:none;">
   <p>Logged in as: <span id="userEmail"></span></p>
   <button onclick="logout()">Logout</button>
@@ -34,32 +34,31 @@
 
 <hr>
 
-<!-- ================= POST JOB (EMPLOYER ONLY) ================= -->
+<!-- JOB FORM -->
 <div id="jobForm" style="display:none;">
-  <h2>Post a Job (Employer Dashboard)</h2>
+  <h2>Post a Job (Employer)</h2>
 
   <input id="title" placeholder="Job Title">
   <input id="company" placeholder="Company">
   <input id="salary" placeholder="Salary">
-  <textarea id="description" placeholder="Job Description"></textarea>
+  <textarea id="description" placeholder="Description"></textarea>
 
   <button onclick="postJob()">Post Job</button>
 </div>
 
 <hr>
 
-<!-- ================= JOB LIST ================= -->
-<h2>Available Jobs</h2>
+<h2>Jobs</h2>
 <div id="jobList"></div>
 
-<!-- ================= APPLY SECTION ================= -->
+<!-- APPLY BOX -->
 <div id="applyBox" style="display:none;">
-  <h2>Apply to Job</h2>
-  <textarea id="applyMessage" placeholder="Write your application message"></textarea>
-  <button onclick="submitApplication()">Submit Application</button>
+  <h3>Apply to Job</h3>
+  <textarea id="applyMessage" placeholder="Your message"></textarea>
+  <button onclick="submitApplication()">Send Application</button>
 </div>
 
-<!-- ================= FIREBASE ================= -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
