@@ -21,8 +21,8 @@ let activeChatId = null;
 
 // ================= AUTH =================
 function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = email.value;
+  const password = password.value;
   const role = document.getElementById("role").value;
 
   auth.createUserWithEmailAndPassword(email, password)
@@ -35,10 +35,7 @@ function register() {
 }
 
 function login() {
-  auth.signInWithEmailAndPassword(
-    document.getElementById("email").value,
-    document.getElementById("password").value
-  );
+  auth.signInWithEmailAndPassword(email.value, password.value);
 }
 
 function logout() {
@@ -49,20 +46,20 @@ function logout() {
 auth.onAuthStateChanged(async (user) => {
   if (!user) return;
 
-  document.getElementById("authSection").style.display = "none";
-  document.getElementById("userSection").style.display = "block";
-  document.getElementById("userEmail").innerText = user.email;
+  const doc = await db.collection("users").doc(user.uid).get();
+  currentUserRole = doc.data().role;
 
-  const userDoc = await db.collection("users").doc(user.uid).get();
-  currentUserRole = userDoc.data().role;
+  userSection.style.display = "block";
+  authSection.style.display = "none";
+  userEmail.innerText = user.email;
 
   if (currentUserRole === "employer") {
-    document.getElementById("employerDashboard").style.display = "block";
-    document.getElementById("jobListWrapper").style.display = "none";
+    employerDashboard.style.display = "block";
+    jobListWrapper.style.display = "none";
     loadMyJobs();
   } else {
-    document.getElementById("employerDashboard").style.display = "none";
-    document.getElementById("jobListWrapper").style.display = "block";
+    employerDashboard.style.display = "none";
+    jobListWrapper.style.display = "block";
     loadJobs();
   }
 });
@@ -87,12 +84,9 @@ function loadJobs() {
     jobList.innerHTML = "";
 
     snap.forEach(doc => {
-      const j = doc.data();
-
       jobList.innerHTML += `
         <div class="job">
-          <h3>${j.title}</h3>
-          <p>${j.company}</p>
+          <h3>${doc.data().title}</h3>
           <button onclick="applyJob('${doc.id}')">Apply</button>
         </div>
       `;
@@ -100,7 +94,7 @@ function loadJobs() {
   });
 }
 
-// ================= APPLY + CHAT CREATE =================
+// ================= APPLY =================
 function applyJob(jobId) {
   selectedJobId = jobId;
   applyBox.style.display = "block";
@@ -109,11 +103,13 @@ function applyJob(jobId) {
 async function submitApplication() {
   const user = auth.currentUser;
 
-  const chatRef = await db.collection("chats").add({
+  const chatRef = await db.collection("chats").doc();
+
+  await chatRef.set({
     jobId: selectedJobId,
     participants: {
-      employerId: "",
-      applicantId: user.uid
+      applicantId: user.uid,
+      employerId: ""
     }
   });
 
@@ -125,7 +121,6 @@ async function submitApplication() {
     status: "pending"
   });
 
-  alert("Applied");
   applyBox.style.display = "none";
 }
 
@@ -143,9 +138,9 @@ function loadMyJobs() {
           <div class="job">
             <h3>${doc.data().title}</h3>
             <button onclick="viewApplicants('${doc.id}')">
-              View Applicants
+              Applicants
             </button>
-            <div id="app-${doc.id}"></div>
+            <div id="apps-${doc.id}"></div>
           </div>
         `;
       });
@@ -154,7 +149,7 @@ function loadMyJobs() {
 
 // ================= APPLICANTS =================
 function viewApplicants(jobId) {
-  const container = document.getElementById("app-" + jobId);
+  const container = document.getElementById("apps-" + jobId);
 
   db.collection("applications")
     .where("jobId", "==", jobId)
@@ -168,7 +163,7 @@ function viewApplicants(jobId) {
         container.innerHTML += `
           <div>
             <p>${a.message}</p>
-            <p>${a.status}</p>
+            <p>Status: ${a.status}</p>
 
             <button onclick="openChat('${a.chatId}')">Message</button>
             <button onclick="updateStatus('${doc.id}','accepted')">Accept</button>
@@ -176,6 +171,7 @@ function viewApplicants(jobId) {
           </div>
         `;
       });
+
     });
 }
 
@@ -189,17 +185,16 @@ function openChat(chatId) {
   activeChatId = chatId;
   chatBox.style.display = "block";
 
-  db.collection("chats").doc(chatId)
+  db.collection("chats")
+    .doc(chatId)
     .collection("messages")
     .orderBy("createdAt")
     .onSnapshot(snap => {
-
       chatMessages.innerHTML = "";
 
       snap.forEach(doc => {
         chatMessages.innerHTML += `<p>${doc.data().text}</p>`;
       });
-
     });
 }
 
