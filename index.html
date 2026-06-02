@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,19 +42,15 @@
   <button onclick="showTab('jobs')">My Jobs</button>
   <button onclick="showTab('post')">Post Job</button>
 
-  <!-- DASHBOARD -->
   <div id="tab-dashboard">
     <h3>Overview</h3>
-    <p>Manage your hiring here.</p>
   </div>
 
-  <!-- MY JOBS -->
   <div id="tab-jobs" style="display:none;">
     <h3>My Jobs</h3>
     <div id="myJobs"></div>
   </div>
 
-  <!-- POST JOB -->
   <div id="tab-post" style="display:none;">
     <h3>Post Job</h3>
 
@@ -71,7 +66,7 @@
 
 <hr>
 
-<!-- ================= JOB LIST (JOBSEEKER VIEW) ================= -->
+<!-- ================= JOB LIST ================= -->
 <div id="jobListWrapper">
   <h2>Available Jobs</h2>
   <div id="jobList"></div>
@@ -79,9 +74,21 @@
 
 <!-- ================= APPLY BOX ================= -->
 <div id="applyBox" style="display:none;">
-  <h3>Apply to Job</h3>
-  <textarea id="applyMessage" placeholder="Message"></textarea>
-  <button onclick="submitApplication()">Send Application</button>
+  <h3>Apply</h3>
+  <textarea id="applyMessage"></textarea>
+  <button onclick="submitApplication()">Send</button>
+</div>
+
+<!-- ================= CHAT BOX ================= -->
+<div id="chatBox" style="display:none; position:fixed; right:20px; bottom:20px; width:300px; background:#fff; border:1px solid #ccc; padding:10px;">
+  
+  <h3>Chat</h3>
+
+  <div id="chatMessages" style="height:200px; overflow:auto;"></div>
+
+  <input id="chatInput" placeholder="Message">
+  <button onclick="sendMessage()">Send</button>
+
 </div>
 
 <!-- ================= FIREBASE ================= -->
