@@ -1,9 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote Work Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>💼 Remote Work Hub</h1>
+
+<!-- =========================
+     AUTH SECTION
+========================= -->
 <div id="authSection">
   <h2>Login / Register</h2>
 
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
+  <!-- ROLE SELECTION -->
   <select id="role">
     <option value="jobseeker">Job Seeker</option>
     <option value="employer">Employer</option>
@@ -12,3 +26,50 @@
   <button onclick="register()">Register</button>
   <button onclick="login()">Login</button>
 </div>
+
+<hr>
+
+<!-- =========================
+     USER INFO SECTION
+========================= -->
+<div id="userSection" style="display:none;">
+  <p>Logged in as: <span id="userEmail"></span></p>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<hr>
+
+<!-- =========================
+     JOB POST FORM (Employer only)
+========================= -->
+<div id="jobForm" style="display:none;">
+  <h2>Post a Job (Employers Only)</h2>
+
+  <input id="title" placeholder="Job Title">
+  <input id="company" placeholder="Company">
+  <input id="salary" placeholder="Salary">
+  <textarea id="description" placeholder="Job Description"></textarea>
+
+  <button onclick="postJob()">Post Job</button>
+</div>
+
+<hr>
+
+<!-- =========================
+     JOB LISTINGS
+========================= -->
+<h2>Available Jobs</h2>
+<div id="jobList"></div>
+
+<!-- =========================
+     FIREBASE SDKs
+========================= -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<!-- YOUR APP -->
+<script src="app.js"></script>
+
+</body>
+</html>
