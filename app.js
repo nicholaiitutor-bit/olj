@@ -13,7 +13,9 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// ================= GLOBAL STATE =================
 let selectedJobId = null;
+let currentUserRole = null;
 
 // ================= REGISTER =================
 function register() {
@@ -49,9 +51,13 @@ function logout() {
 // ================= AUTH STATE =================
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
+    currentUserRole = null;
+
     document.getElementById("authSection").style.display = "block";
     document.getElementById("userSection").style.display = "none";
     document.getElementById("jobForm").style.display = "none";
+    document.getElementById("jobList").innerHTML = "";
+
     return;
   }
 
@@ -60,9 +66,11 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("userEmail").innerText = user.email;
 
   const userDoc = await db.collection("users").doc(user.uid).get();
-  const role = userDoc.data().role;
 
-  if (role === "employer") {
+  currentUserRole = userDoc.exists ? userDoc.data().role : "jobseeker";
+
+  // Show job form only for employers
+  if (currentUserRole === "employer") {
     document.getElementById("jobForm").style.display = "block";
   } else {
     document.getElementById("jobForm").style.display = "none";
@@ -79,6 +87,11 @@ function postJob() {
   const company = document.getElementById("company").value;
   const salary = document.getElementById("salary").value;
   const description = document.getElementById("description").value;
+
+  if (!title || !company) {
+    alert("Please fill required fields");
+    return;
+  }
 
   db.collection("jobs").add({
     title,
@@ -104,6 +117,17 @@ function loadJobs() {
       snapshot.forEach(doc => {
         const job = doc.data();
 
+        let applyButton = "";
+
+        // ONLY jobseekers can apply
+        if (currentUserRole === "jobseeker") {
+          applyButton = `
+            <button onclick="openApply('${doc.id}')">
+              Apply
+            </button>
+          `;
+        }
+
         container.innerHTML += `
           <div class="job">
             <h3>${job.title}</h3>
@@ -111,9 +135,7 @@ function loadJobs() {
             <p>${job.salary}</p>
             <p>${job.description}</p>
 
-            <button onclick="openApply('${doc.id}')">
-              Apply
-            </button>
+            ${applyButton}
           </div>
         `;
       });
@@ -129,6 +151,11 @@ function openApply(jobId) {
 function submitApplication() {
   const user = auth.currentUser;
   const message = document.getElementById("applyMessage").value;
+
+  if (!message) {
+    alert("Please write a message");
+    return;
+  }
 
   db.collection("applications").add({
     jobId: selectedJobId,
