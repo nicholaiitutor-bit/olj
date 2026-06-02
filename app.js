@@ -57,7 +57,7 @@ auth.onAuthStateChanged(async (user) => {
     document.getElementById("authSection").style.display = "block";
     document.getElementById("userSection").style.display = "none";
     document.getElementById("employerDashboard").style.display = "none";
-    document.getElementById("jobList").innerHTML = "";
+    document.getElementById("jobList").style.display = "none";
 
     return;
   }
@@ -71,12 +71,13 @@ auth.onAuthStateChanged(async (user) => {
 
   if (currentUserRole === "employer") {
     document.getElementById("employerDashboard").style.display = "block";
+    document.getElementById("jobList").style.display = "none";
     loadMyJobs();
   } else {
     document.getElementById("employerDashboard").style.display = "none";
+    document.getElementById("jobList").style.display = "block";
+    loadJobs();
   }
-
-  loadJobs();
 });
 
 // ================= TAB SYSTEM =================
