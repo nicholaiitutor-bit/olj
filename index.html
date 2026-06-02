@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,76 +8,99 @@
 
 <body>
 
-<h1>💼 Remote Work Hub</h1>
+<!-- ================= HOME PAGE ================= -->
+<div id="homePage">
 
-<!-- AUTH -->
-<div id="authSection">
-  <h2>Login / Register</h2>
+  <div class="hero">
+    <h1>💼 Remote Work Hub</h1>
+    <p>Hire talent or find remote jobs worldwide</p>
 
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
-  <select id="role">
-    <option value="jobseeker">Job Seeker</option>
-    <option value="employer">Employer</option>
-  </select>
-
-  <button onclick="register()">Register</button>
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- USER -->
-<div id="userSection" style="display:none;">
-  <p>Logged in as: <span id="userEmail"></span></p>
-  <button onclick="logout()">Logout</button>
-</div>
-
-<hr>
-
-<!-- EMPLOYER DASHBOARD -->
-<div id="employerDashboard" style="display:none;">
-  <h2>Employer Dashboard</h2>
-
-  <button onclick="showTab('jobs')">My Jobs</button>
-  <button onclick="showTab('post')">Post Job</button>
-
-  <div id="tab-jobs">
-    <h3>My Jobs</h3>
-    <div id="myJobs"></div>
+    <button onclick="openAuth('login')">Login</button>
+    <button onclick="openAuth('register')">Sign Up</button>
   </div>
 
-  <div id="tab-post" style="display:none;">
-    <h3>Post Job</h3>
+</div>
 
-    <input id="title" placeholder="Job Title">
-    <input id="company" placeholder="Company">
-    <input id="salary" placeholder="Salary">
-    <textarea id="description" placeholder="Description"></textarea>
+<!-- ================= AUTH MODAL ================= -->
+<div id="authModal" class="modal" style="display:none;">
 
-    <button onclick="postJob()">Post Job</button>
+  <div class="modal-box">
+
+    <h2 id="authTitle">Login</h2>
+
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <select id="role">
+      <option value="jobseeker">Job Seeker</option>
+      <option value="employer">Employer</option>
+    </select>
+
+    <button onclick="register()" id="registerBtn">Register</button>
+    <button onclick="login()" id="loginBtn">Login</button>
+
+    <button onclick="closeAuth()">Close</button>
+
   </div>
+
 </div>
 
-<hr>
+<!-- ================= APP ================= -->
+<div id="app" style="display:none;">
 
-<!-- JOB LIST -->
-<div id="jobListWrapper">
-  <h2>Available Jobs</h2>
-  <div id="jobList"></div>
+  <!-- TOP BAR -->
+  <div id="topBar">
+    <span>Logged in as: <b id="userEmail"></b></span>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <button onclick="showView('jobs')">Jobs</button>
+      <button onclick="showView('post')">Post Job</button>
+      <button onclick="showView('dashboard')">Dashboard</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- JOB LIST -->
+      <div id="view-jobs">
+        <h2>Available Jobs</h2>
+        <div id="jobList"></div>
+      </div>
+
+      <!-- POST JOB -->
+      <div id="view-post" style="display:none;">
+        <h2>Post Job</h2>
+
+        <input id="title" placeholder="Job Title">
+        <input id="company" placeholder="Company">
+        <input id="salary" placeholder="Salary">
+        <textarea id="description" placeholder="Description"></textarea>
+
+        <button onclick="postJob()">Post</button>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div id="view-dashboard" style="display:none;">
+        <h2>My Jobs</h2>
+        <div id="myJobs"></div>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
-<!-- APPLY BOX -->
-<div id="applyBox" style="display:none;">
-  <h3>Apply</h3>
-  <textarea id="applyMessage"></textarea>
-  <button onclick="submitApplication()">Send</button>
-</div>
-
-<!-- CHAT BOX -->
-<div id="chatBox" style="display:none; position:fixed; right:20px; bottom:20px; width:300px; background:white; border:1px solid #ccc; padding:10px;">
+<!-- CHAT -->
+<div id="chatBox" style="display:none;">
   <h3>Chat</h3>
-  <div id="chatMessages" style="height:200px; overflow:auto;"></div>
-  <input id="chatInput" placeholder="Message">
+  <div id="chatMessages"></div>
+  <input id="chatInput">
   <button onclick="sendMessage()">Send</button>
 </div>
 
